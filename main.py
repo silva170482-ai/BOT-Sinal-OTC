@@ -10,13 +10,10 @@ def varrer_ativos_otc():
 
 @app.route("/")
 def index():
-    # Fuso horário de Brasília (UTC-3)
     brasilia_tz = timezone(timedelta(hours=-3))
     agora = datetime.now(brasilia_tz)
-    
     horario_atual = agora.strftime("%H:%M")
     expiracao = (agora + timedelta(minutes=5)).strftime("%H:%M")
-    
     resultado = varrer_ativos_otc()
     
     return f"""
@@ -33,9 +30,9 @@ def index():
     <body>
         <div class="box">
             <h2>Melhor Oportunidade Encontrada:</h2>
-            <p>{resultado}</p>
-            <p><strong>Horário de Entrada:</strong> {horario_atual}</p>
-            <p><strong>Tempo de Expiração:</strong> 5 minutos ({expiracao})</p>
+            <p>{{resultado}}</p>
+            <p><strong>Horário de Entrada:</strong> {{horario_atual}}</p>
+            <p><strong>Tempo de Expiração:</strong> 5 minutos ({{expiracao}})</p>
         </div>
         <br>
         <a href="/" class="voltar">← Voltar e gerar novo sinal</a>
