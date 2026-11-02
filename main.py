@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from flask import Flask, render_template_string
 
-app = Flask_(name)
+app = Flask(__name__)
 
 def varrer_ativos_otc():
     melhor_opcao = "EURUSD-OTC (Tendência de Alta - Alerta de Compra)"
