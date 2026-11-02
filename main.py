@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from flask import Flask
 
 app = Flask(__name__)
@@ -10,7 +10,10 @@ def varrer_ativos_otc():
 
 @app.route("/")
 def index():
-    agora = datetime.now()
+    # Fuso horário de Brasília (UTC-3)
+    brasilia_tz = timezone(timedelta(hours=-3))
+    agora = datetime.now(brasilia_tz)
+    
     horario_atual = agora.strftime("%H:%M")
     expiracao = (agora + timedelta(minutes=5)).strftime("%H:%M")
     
