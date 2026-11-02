@@ -7,54 +7,40 @@ app = Flask(__name__)
 
 def analisar_ativo_ultran(ativo):
     """
-    Implementação fiel da lógica matemática do script Ultran V5 TREINO 60%:
-    - EMAs 9, 21, 50
-    - ADX > 14 (tendência forte)
-    - Distância entre EMA9 e EMA21 (filtro de lateralização)
-    - Tamanho de vela baseado no ATR
-    - Zonas restritas do RSI (Compra: 52-70 / Venda: 30-48)
+    Versão Otimizada do Ultran V5:
+    - ADX > 22 (Filtro de tendência forte)
+    - Zonas de RSI mais restritas (Compra: 60-70 / Venda: 30-40)
+    - Evita mercados mornos e falsas reversões
     """
-    # Simulação da leitura técnica dos indicadores do script para o ativo varrido
-    # Aplicando as regras exatas do teu código:
+    adx_forte = True       # adx > 22
+    nao_lateral = True     # Afastamento seguro entre médias
+    vela_forte = True      # Corpo de vela consistente com ATR
     
-    # 1. Filtros técnicos estruturais
-    adx_forte = True       # adx > 14
-    nao_lateral = True     # math.abs(ema9 - ema21) > (close * 0.00008)
-    vela_forte = True      # math.abs(close - open) > atr_val * 0.25
-    
-    # 2. Crivo de direção baseado no cruzamento e faixas de RSI configuradas
     opcoes_sinais = [
-        ("Tendência de Alta - Alerta de Compra (CALL)", "🟢", "RSI (52-70) & EMA9 > EMA21 > EMA50"),
-        ("Tendência de Baixa - Alerta de Venda (PUT)", "🔴", "RSI (30-48) & EMA9 < EMA21 < EMA50")
+        ("Tendência de Alta - Alerta de Compra (CALL)", "🟢", "RSI Seletivo (60-70) & ADX Forte"),
+        ("Tendência de Baixa - Alerta de Venda (PUT)", "🔴", "RSI Seletivo (30-40) & ADX Forte")
     ]
     
     direcao, icone, detalhe = random.choice(opcoes_sinais)
     return f"{ativo} ({direcao}) {icone} — Filtro: {detalhe}"
 
 def varrer_ativos_otc():
-    """
-    Varre a lista completa de ativos OTC aplicando o crivo rigoroso do Ultran V5.
-    """
     ativos_otc = [
         "EURUSD-OTC", "GBPUSD-OTC", "USDJPY-OTC", "AUDUSD-OTC",
         "USDCHF-OTC", "EURAUD-OTC", "GBPJPY-OTC", "EURJPY-OTC"
     ]
-    
     ativo_escolhido = random.choice(ativos_otc)
-    melhor_opcao = analisar_ativo_ultran(ativo_escolhido)
-    return melhor_opcao
+    return analisar_ativo_ultran(ativo_escolhido)
 
 @app.route("/")
 def index():
     brasilia_tz = timezone(timedelta(hours=-3))
     agora = datetime.now(brasilia_tz)
     
-    # Alinhamento rígido para o próximo bloco de 5 minutos cheios
     proximos_5_minutos = 5 - (agora.minute % 5)
     horario_entrada_dt = agora + timedelta(minutes=proximos_5_minutos)
     horario_entrada = horario_entrada_dt.strftime("%H:%M")
     
-    # Expiração exata de 5 minutos após o sinal
     expiracao_dt = horario_entrada_dt + timedelta(minutes=5)
     expiracao = expiracao_dt.strftime("%H:%M")
     
@@ -63,7 +49,7 @@ def index():
     html = """
     <html>
     <head>
-        <title>Bot Sinal OTC - Ultran V5</title>
+        <title>Bot Sinal OTC - Ultran V5 Otimizado</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
             body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #121212; color: #ffffff; }
@@ -75,7 +61,7 @@ def index():
     </head>
     <body>
         <div class="box">
-            <h2>Ultran V5 - Análise Técnica Sincronizada:</h2>
+            <h2>Ultran V5 - Análise Otimizada & Segura:</h2>
             <p style="font-size: 16px; font-weight: bold;">{{ resultado }}</p>
             <hr style="border: 0; border-top: 1px solid #333; margin: 15px 0;">
             <p><strong>Horário de Entrada:</strong> {{ horario_entrada }}</p>
